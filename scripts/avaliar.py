@@ -70,7 +70,8 @@ def avaliar_fluxo_completo(cen: cenario.Cenario) -> dict | None:
     transacoes = extrato_mod.ler_extrato((pasta / "extrato_outubro.ofx").read_bytes(), "extrato_outubro.ofx")
     resultado = conciliacao_mod.conciliar(docs, transacoes)
 
-    esperado = {k: v for k, v in json.loads(gabarito_arquivo.read_text(encoding="utf-8")).items() if v}
+    gabarito = json.loads(gabarito_arquivo.read_text(encoding="utf-8"))["transacoes"]
+    esperado = {fitid: doc_id for fitid, doc_id in gabarito.items() if doc_id}
     obtido = {p.transacao_id: p.documento_id for p in resultado.pares}
     pares_certos = sum(1 for t, d in obtido.items() if esperado.get(t) == d)
 
@@ -100,12 +101,27 @@ def main() -> None:
         "",
     ]
 
-    for nome in ("scripts.avaliar_documentos", "scripts.avaliar_conciliacao"):
-        mod = _talvez(nome)
-        if mod and hasattr(mod, "avaliar"):
-            resultado = mod.avaliar()
-            linhas += [f"## {nome.split('.')[-1]}", "```", json.dumps(resultado, ensure_ascii=False, indent=2,
-                                                                       default=str), "```", ""]
+    docs_mod = _talvez("scripts.avaliar_documentos")
+    if docs_mod and hasattr(docs_mod, "avaliar"):
+        r = docs_mod.avaliar()
+        certos, total = r["acertos"]
+        formatos = ", ".join(f"{f} {c}/{t}" for f, (c, t) in r["por_formato"].items())
+        linhas += [
+            "## Leitura dos documentos (extrator de regras)",
+            f"- Campos certos: **{certos} de {total}** em {r['documentos']} documentos ({formatos})",
+            "- Com o extrator por LLM (gpt-4o-mini): ver `docs/avaliacao_documentos_llm.md`",
+            "",
+        ]
+
+    conc_mod = _talvez("scripts.avaliar_conciliacao")
+    if conc_mod and hasattr(conc_mod, "avaliar"):
+        r = conc_mod.avaliar()
+        linhas += [
+            "## Conciliação (sobre o gabarito dos documentos)",
+            f"- Pares certos: **{r['certos']} de {r['pares_esperados']}** "
+            f"(precisão {r['precisao']:.0%}, revocação {r['revocacao']:.0%})",
+            "",
+        ]
 
     fluxo = avaliar_fluxo_completo(cen)
     if fluxo:
