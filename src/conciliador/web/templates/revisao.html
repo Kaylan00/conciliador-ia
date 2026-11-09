@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Conciliador · revisão</title>
+<style>
+  :root { --tinta: #1d2330; --tinta-2: #5b6474; --linha: #e3e6ec; --fundo: #f5f6f8; --papel: #fff;
+          --azul: #2457c5; --verde: #1d7f4e; --ambar: #a86400; --ambar-fundo: #fdf4e3; --vermelho: #b3261e; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--fundo); color: var(--tinta); font: 14px/1.45 system-ui, "Segoe UI", sans-serif; }
+  header { background: var(--papel); border-bottom: 1px solid var(--linha); padding: 14px 28px; display: flex; gap: 28px; align-items: baseline; flex-wrap: wrap; }
+  header h1 { font-size: 17px; margin: 0; }
+  header .numeros { display: flex; gap: 22px; color: var(--tinta-2); }
+  header .numeros b { color: var(--tinta); font-size: 15px; }
+  main { max-width: 1240px; margin: 0 auto; padding: 22px 28px 60px; }
+  h2 { font-size: 15px; margin: 30px 0 8px; }
+  h2 small { color: var(--tinta-2); font-weight: 400; margin-left: 6px; }
+  table { width: 100%; border-collapse: collapse; background: var(--papel); border: 1px solid var(--linha); }
+  th, td { text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--linha); vertical-align: top; }
+  th { font-size: 12px; color: var(--tinta-2); font-weight: 600; background: #fafbfc; }
+  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .apoio { color: var(--tinta-2); font-size: 12.5px; }
+  .pendencias { background: var(--papel); border: 1px solid var(--linha); border-left: 3px solid var(--ambar); padding: 4px 14px; }
+  .pendencias li { margin: 8px 0; }
+  .pendencias ul { padding-left: 18px; }
+  .problema { color: var(--ambar); }
+  tr.aprovado td { color: var(--verde); }
+  tr.rejeitado td { color: #9aa1ad; text-decoration: line-through; }
+  tr.duvida td { background: var(--ambar-fundo); }
+  button { font: inherit; padding: 4px 10px; border: 1px solid var(--linha); background: var(--papel); border-radius: 4px; cursor: pointer; }
+  button.principal { background: var(--azul); border-color: var(--azul); color: #fff; }
+  select { font: inherit; padding: 3px 4px; max-width: 230px; }
+  a { color: var(--azul); }
+  .vazio { background: var(--papel); border: 1px solid var(--linha); padding: 22px; }
+  .vazio form { margin-top: 12px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+  .erro { color: var(--vermelho); }
+  code { font-size: 12px; }
+</style>
+</head>
+<body>
+{% set n_pares = conciliacao.pares|length if conciliacao else 0 %}
+<header>
+  <h1>Conciliador</h1>
+  <div class="numeros">
+    <span><b>{{ docs|length }}</b> documentos</span>
+    <span><b>{{ transacoes|length }}</b> transações no extrato</span>
+    <span><b>{{ n_pares }}</b> conciliadas</span>
+    <span><b>{{ n_aprovados }}</b> de {{ lancamentos|length }} lançamentos aprovados</span>
+  </div>
+  <span class="apoio"><a href="/docs">API</a></span>
+</header>
+<main>
+
+{% if not docs %}
+<div class="vazio">
+  <p>Nenhum documento ainda. Envie notas, faturas e recibos (XML, PDF, JPG ou PNG) e o extrato do banco (OFX ou CSV), ou carregue o exemplo do Ateliê Ponto Firme (outubro de 2026).</p>
+  <form id="f-docs"><input type="file" name="arquivos" multiple> <button>Enviar documentos</button></form>
+  <form id="f-extrato"><input type="file" name="arquivo"> <button>Enviar extrato</button></form>
+  <p><button class="principal" onclick="acao('POST', '/api/exemplo')">Carregar exemplo</button> <span id="status" class="apoio"></span></p>
+</div>
+{% else %}
+
+<h2>Precisa de você</h2>
+<div class="pendencias">
+<ul>
+  {% for doc_id, d in pendentes_docs.items() %}
+  <li><a href="/api/documentos/{{ doc_id }}/arquivo" target="_blank">{{ nomes[doc_id] }}</a>:
+      confiança {{ (d.confianca * 100)|round|int }}%
+      {% for p in d.problemas %}<br><span class="problema">{{ p.mensagem }}</span>{% endfor %}</li>
+  {% endfor %}
+  {% for i, l in lancamentos if l.status == "sugerido" and a_classificar in l.partidas|map(attribute="conta")|list %}
+  <li>{{ l.historico }} ({{ brl(l.partidas[0].debito or l.partidas[0].credito) }}): sem documento e sem conta. Escolha a conta abaixo ou peça a nota.</li>
+  {% endfor %}
+  {% if conciliacao %}{% for doc_id in conciliacao.documentos_sem_transacao %}
+  <li>{{ nomes[doc_id] }}: {{ "ainda não recebido" if docs[doc_id].direcao == "receber" else "ainda não pago" }}
+      ({{ brl(docs[doc_id].valor_total) }}, vence {{ docs[doc_id].data_vencimento.strftime("%d/%m") if docs[doc_id].data_vencimento else "sem data" }})</li>
+  {% endfor %}{% endif %}
+</ul>
+</div>
+
+<h2>Lançamentos sugeridos <small>partidas dobradas; nada vale sem aprovação</small></h2>
+<table>
+  <tr><th>Data</th><th>Histórico</th><th>Débito</th><th>Crédito</th><th class="num">Valor</th><th>Por quê</th><th></th></tr>
+  {% for i, l in lancamentos %}
+  {% set editavel = l.partidas|rejectattr("conta", "in", controle)|list %}
+  <tr class="{{ l.status }}{% if l.status == 'sugerido' and a_classificar in l.partidas|map(attribute='conta')|list %} duvida{% endif %}">
+    <td>{{ l.data.strftime("%d/%m") }}</td>
+    <td>{{ l.historico }}</td>
+    {% for lado in ["debito", "credito"] %}
+    <td>{% for p in l.partidas if p[lado] > 0 %}
+      {% if editavel and p.conta == editavel[0].conta and l.status == "sugerido" %}
+        <select onchange="acao('PUT', '/api/lancamentos/{{ i }}/conta', {conta: this.value})">
+          {% for c in contas_editaveis %}<option value="{{ c.codigo }}" {% if c.codigo == p.conta %}selected{% endif %}>{{ c.codigo }} {{ c.nome }}</option>{% endfor %}
+        </select>
+      {% else %}{{ p.conta }} {{ plano[p.conta].nome }}{% endif %}
+    {% endfor %}</td>
+    {% endfor %}
+    <td class="num">{{ brl(l.partidas|sum(attribute="debito")) }}</td>
+    <td class="apoio">{{ l.justificativa }}</td>
+    <td>{% if l.status == "sugerido" %}
+      <button onclick="acao('POST', '/api/lancamentos/{{ i }}/aprovar')">Aprovar</button>
+      <button onclick="acao('POST', '/api/lancamentos/{{ i }}/rejeitar')">Rejeitar</button>
+    {% else %}{{ l.status }}{% endif %}</td>
+  </tr>
+  {% endfor %}
+</table>
+
+{% if conciliacao %}
+<h2>Conciliação <small>cada transação do extrato com o documento que a explica</small></h2>
+<table>
+  <tr><th>Data</th><th>Extrato</th><th class="num">Valor</th><th>Documento</th><th class="num">Score</th><th>Motivos</th></tr>
+  {% for p in conciliacao.pares|sort(attribute="transacao_id") %}
+  {% set t = transacoes[p.transacao_id] %}
+  <tr>
+    <td>{{ t.data.strftime("%d/%m") }}</td><td><code>{{ t.descricao }}</code></td><td class="num">{{ brl(t.valor) }}</td>
+    <td><a href="/api/documentos/{{ p.documento_id }}/arquivo" target="_blank">{{ nomes[p.documento_id] }}</a></td>
+    <td class="num">{{ (p.score * 100)|round|int }}</td><td class="apoio">{{ p.motivos|join("; ") }}</td>
+  </tr>
+  {% endfor %}
+  {% for t_id in conciliacao.transacoes_sem_documento %}{% set t = transacoes[t_id] %}
+  <tr><td>{{ t.data.strftime("%d/%m") }}</td><td><code>{{ t.descricao }}</code></td><td class="num">{{ brl(t.valor) }}</td>
+      <td class="apoio" colspan="3">sem documento</td></tr>
+  {% endfor %}
+</table>
+{% endif %}
+
+<h2>Balancete <small>sugeridos e aprovados, sem os rejeitados</small></h2>
+<table>
+  <tr><th>Conta</th><th class="num">Débitos</th><th class="num">Créditos</th><th class="num">Saldo</th></tr>
+  {% for b in balancete %}
+  <tr><td>{{ b.conta }} {{ b.nome }}</td><td class="num">{{ brl(b.debitos) }}</td><td class="num">{{ brl(b.creditos) }}</td><td class="num">{{ brl(b.saldo) }}</td></tr>
+  {% endfor %}
+  <tr><th>Total</th><th class="num">{{ brl(balancete|sum(attribute="debitos")) }}</th><th class="num">{{ brl(balancete|sum(attribute="creditos")) }}</th><th></th></tr>
+</table>
+{% endif %}
+</main>
+<script>
+async function acao(metodo, url, corpo) {
+  const status = document.getElementById("status");
+  if (status) status.textContent = "processando...";
+  const r = await fetch(url, { method: metodo, headers: corpo ? {"Content-Type": "application/json"} : {}, body: corpo ? JSON.stringify(corpo) : undefined });
+  if (!r.ok) { const e = await r.json().catch(() => ({})); alert(e.detail || "Erro " + r.status); return; }
+  location.reload();
+}
+for (const [id, url, campo] of [["f-docs", "/api/documentos", "arquivos"], ["f-extrato", "/api/extratos", "arquivo"]]) {
+  const f = document.getElementById(id);
+  if (!f) continue;
+  f.addEventListener("submit", async (ev) => {
+    ev.preventDefault();
+    const dados = new FormData();
+    for (const arq of f.querySelector("input").files) dados.append(campo, arq);
+    const r = await fetch(url, { method: "POST", body: dados });
+    if (!r.ok) { alert("Erro ao enviar"); return; }
+    await fetch("/api/processar", { method: "POST" });
+    location.reload();
+  });
+}
+</script>
+</body>
+</html>
