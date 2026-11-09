@@ -89,7 +89,7 @@ class ParConciliado(BaseModel):
     transacao_id: str
     documento_id: str
     score: float = Field(ge=0, le=1)
-    motivos: list[str]  # por que casou: "valor igual", "2 dias depois do vencimento", "nome do fornecedor no memo"
+    motivos: list[str]  # por que casou, ex.: "valor igual", "2 dias depois do vencimento"
 
 
 class ResultadoConciliacao(BaseModel):

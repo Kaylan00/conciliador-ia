@@ -1,0 +1,28 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  testes:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Tesseract com português
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends tesseract-ocr tesseract-ocr-por
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+
+      - run: pip install -e ".[dev]"
+      - run: ruff check src tests scripts
+      - run: pytest -q
+
+      - name: Avaliação com os dados de exemplo
+        run: |
+          if [ -f scripts/avaliar.py ]; then python scripts/avaliar.py; else echo "sem avaliação ainda"; fi
