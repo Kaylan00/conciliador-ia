@@ -1,0 +1,24 @@
+# docker compose up --build   ->  http://localhost:8000 (tela de revisão) e /docs (API)
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: conciliador
+      POSTGRES_PASSWORD: conciliador  # só para rodar na máquina
+      POSTGRES_DB: conciliador
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U conciliador"]
+      interval: 3s
+      retries: 20
+
+  api:
+    build: .
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql+psycopg://conciliador:conciliador@db:5432/conciliador
+      EMPRESA_CNPJ: "52601815000120"
+      OPENROUTER_API_KEY: ${OPENROUTER_API_KEY:-}
+    ports:
+      - "8000:8000"
