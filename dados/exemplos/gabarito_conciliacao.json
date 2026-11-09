@@ -1,0 +1,22 @@
+{
+  "_leia": "Gerado por scripts/gerar_extrato.py a partir de cenario.json; não edite à mão. Em 'transacoes', a chave é o FITID em extrato_outubro.ofx e o valor é o documento que a transação paga ou recebe (null: nenhum).",
+  "transacoes": {
+    "20261001001": null,
+    "20261003001": "doc-08",
+    "20261005001": "doc-03",
+    "20261007001": "doc-02",
+    "20261009001": "doc-06",
+    "20261010001": "doc-05",
+    "20261012001": "doc-01",
+    "20261014001": "doc-07",
+    "20261015001": "doc-04",
+    "20261018001": "doc-11",
+    "20261020001": "doc-09",
+    "20261021001": null,
+    "20261030001": "doc-12",
+    "20261031001": null
+  },
+  "documentos_sem_transacao": [
+    "doc-10"
+  ]
+}
