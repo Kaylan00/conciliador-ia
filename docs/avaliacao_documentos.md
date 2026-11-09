@@ -29,16 +29,16 @@ Gerado por `python scripts/avaliar_documentos.py`: os números abaixo foram medi
 | documento | formato | acertos | confiança | problemas | tempo (s) |
 | --- | --- | --- | --- | --- | --- |
 | doc-01 `nfe_4521_tecidos_vale_verde.xml` | xml | 8/8 | 1.00 | - | 0.00 |
-| doc-02 `nfse_0318_clic_contabilidade.pdf` | pdf_texto | 8/8 | 1.00 | - | 0.02 |
-| doc-03 `recibo_aluguel_outubro.jpg` | imagem | 8/8 | 1.00 | - | 0.41 |
+| doc-02 `nfse_0318_clic_contabilidade.pdf` | pdf_texto | 8/8 | 1.00 | - | 0.03 |
+| doc-03 `recibo_aluguel_outubro.jpg` | imagem | 8/8 | 1.00 | - | 0.36 |
 | doc-04 `fatura_energia_outubro.pdf` | pdf_texto | 8/8 | 1.00 | - | 0.01 |
-| doc-05 `fatura_internet_outubro.pdf` | pdf_escaneado | 8/8 | 1.00 | - | 0.91 |
+| doc-05 `fatura_internet_outubro.pdf` | pdf_escaneado | 8/8 | 1.00 | - | 0.97 |
 | doc-06 `nfe_1187_aviamentos_costa.xml` | xml | 8/8 | 1.00 | - | 0.00 |
-| doc-07 `recibo_motofrete.png` | imagem | 8/8 | 1.00 | - | 0.40 |
+| doc-07 `recibo_motofrete.png` | imagem | 8/8 | 1.00 | - | 0.37 |
 | doc-08 `nfse_2290_nuvem_gestao.pdf` | pdf_texto | 8/8 | 1.00 | - | 0.01 |
 | doc-09 `nfe_0093_venda_loja_bem_vestir.xml` | xml | 8/8 | 1.00 | - | 0.00 |
 | doc-10 `nfse_0041_hotel_mar_azul.pdf` | pdf_texto | 8/8 | 1.00 | - | 0.01 |
-| doc-11 `recibo_mercadinho.jpg` | imagem | 8/8 | 1.00 | - | 0.37 |
+| doc-11 `recibo_mercadinho.jpg` | imagem | 8/8 | 1.00 | - | 0.31 |
 | doc-12 `nfe_4610_tecidos_vale_verde.xml` | xml | 8/8 | 1.00 | - | 0.00 |
 
 ## Erros
