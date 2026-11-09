@@ -1,0 +1,33 @@
+{
+  "_leia": "Plano de contas simplificado de uma pequena empresa (modelo para estudo, não é o plano oficial de nenhum contador). Folhas recebem lançamento; grupos só somam.",
+  "contas": [
+    {"codigo": "1", "nome": "Ativo", "natureza": "devedora"},
+    {"codigo": "1.1", "nome": "Ativo circulante", "natureza": "devedora"},
+    {"codigo": "1.1.1", "nome": "Banco conta movimento", "natureza": "devedora", "folha": true},
+    {"codigo": "1.1.2", "nome": "Clientes a receber", "natureza": "devedora", "folha": true},
+    {"codigo": "2", "nome": "Passivo", "natureza": "credora"},
+    {"codigo": "2.1", "nome": "Passivo circulante", "natureza": "credora"},
+    {"codigo": "2.1.1", "nome": "Fornecedores a pagar", "natureza": "credora", "folha": true},
+    {"codigo": "2.1.2", "nome": "Contas a pagar (consumo e aluguel)", "natureza": "credora", "folha": true},
+    {"codigo": "3", "nome": "Receitas", "natureza": "credora"},
+    {"codigo": "3.1", "nome": "Receita operacional", "natureza": "credora"},
+    {"codigo": "3.1.1", "nome": "Venda de mercadorias", "natureza": "credora", "folha": true, "palavras": ["venda", "vestido", "camisa", "revenda"]},
+    {"codigo": "3.1.2", "nome": "Prestação de serviços", "natureza": "credora", "folha": true, "palavras": ["serviço", "ajuste", "bordado", "conserto"]},
+    {"codigo": "3.2", "nome": "Receitas financeiras", "natureza": "credora"},
+    {"codigo": "3.2.1", "nome": "Rendimentos de aplicação", "natureza": "credora", "folha": true, "palavras": ["rendimento", "juros recebidos"]},
+    {"codigo": "4", "nome": "Custos e despesas", "natureza": "devedora"},
+    {"codigo": "4.1", "nome": "Custos de produção", "natureza": "devedora"},
+    {"codigo": "4.1.1", "nome": "Matéria-prima e aviamentos", "natureza": "devedora", "folha": true, "palavras": ["tecido", "linho", "tricoline", "aviamento", "linha", "botão", "zíper"]},
+    {"codigo": "4.1.2", "nome": "Fretes e entregas", "natureza": "devedora", "folha": true, "palavras": ["frete", "motofrete", "entrega", "transporte"]},
+    {"codigo": "4.2", "nome": "Despesas administrativas", "natureza": "devedora"},
+    {"codigo": "4.2.1", "nome": "Aluguel", "natureza": "devedora", "folha": true, "palavras": ["aluguel", "locação"]},
+    {"codigo": "4.2.2", "nome": "Energia elétrica", "natureza": "devedora", "folha": true, "palavras": ["energia", "kwh", "luz"]},
+    {"codigo": "4.2.3", "nome": "Serviços contábeis e profissionais", "natureza": "devedora", "folha": true, "palavras": ["contábil", "contabilidade", "honorários", "advocacia"]},
+    {"codigo": "4.2.4", "nome": "Internet e telefone", "natureza": "devedora", "folha": true, "palavras": ["internet", "fibra", "telefone", "banda larga"]},
+    {"codigo": "4.2.5", "nome": "Software e assinaturas", "natureza": "devedora", "folha": true, "palavras": ["assinatura", "software", "sistema", "licença"]},
+    {"codigo": "4.2.6", "nome": "Material de limpeza e escritório", "natureza": "devedora", "folha": true, "palavras": ["limpeza", "detergente", "papel", "escritório"]},
+    {"codigo": "4.3", "nome": "Despesas financeiras", "natureza": "devedora"},
+    {"codigo": "4.3.1", "nome": "Tarifas bancárias", "natureza": "devedora", "folha": true, "palavras": ["tarifa", "iof", "pacote de serviços"]},
+    {"codigo": "4.9.9", "nome": "Despesas a classificar", "natureza": "devedora", "folha": true}
+  ]
+}

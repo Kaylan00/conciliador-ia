@@ -1,0 +1,10 @@
+# Ambiente de desenvolvimento e testes: Python 3.12 + Tesseract com português.
+# docker build -f Dockerfile.dev -t conciliador-dev .
+# docker run --rm -v "$PWD":/app -w /app conciliador-dev pytest -q
+FROM python:3.12-slim
+RUN apt-get update && apt-get install -y --no-install-recommends tesseract-ocr tesseract-ocr-por fonts-dejavu-core \
+    && rm -rf /var/lib/apt/lists/*
+WORKDIR /app
+COPY pyproject.toml ./
+RUN mkdir -p src/conciliador && touch src/conciliador/__init__.py && pip install --no-cache-dir -e ".[dev]"
+ENV PYTHONPATH=/app/src

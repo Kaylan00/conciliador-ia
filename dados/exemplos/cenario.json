@@ -1,0 +1,165 @@
+{
+  "_leia": "Fonte única dos dados de exemplo e do gabarito. Os geradores de documentos (scripts/gerar_documentos.py) e de extrato (scripts/gerar_extrato.py) leem daqui. Empresas e CNPJs são fictícios, com dígito verificador válido.",
+  "empresa": {
+    "nome": "Ateliê Ponto Firme Ltda",
+    "cnpj": "52601815000120",
+    "banco": "Banco Exemplo S.A.",
+    "agencia": "0001",
+    "conta": "12345-6",
+    "periodo": ["2026-10-01", "2026-10-31"],
+    "saldo_inicial": "18450.00"
+  },
+  "documentos": [
+    {
+      "id": "doc-01", "arquivo": "nfe_4521_tecidos_vale_verde.xml", "formato": "xml_nfe",
+      "tipo": "nfe", "direcao": "pagar",
+      "emitente_nome": "Tecidos Vale Verde Ltda", "emitente_cnpj": "90830166000128",
+      "destinatario_nome": "Ateliê Ponto Firme Ltda", "destinatario_cnpj": "52601815000120",
+      "numero": "4521", "data_emissao": "2026-10-02", "data_vencimento": "2026-10-12",
+      "itens": [
+        {"descricao": "Tecido linho cru 1,40 m", "quantidade": "60", "valor_unitario": "38.00", "valor_total": "2280.00"},
+        {"descricao": "Tricoline estampada 1,50 m", "quantidade": "50", "valor_unitario": "24.00", "valor_total": "1200.00"}
+      ],
+      "valor_total": "3480.00", "descricao": "Compra de tecidos",
+      "conta_esperada": "4.1.1",
+      "pagamento": {"data": "2026-10-12", "valor": "-3480.00", "memo": "PAG BOLETO TECIDOS VALE VERDE LTDA", "tipo": "DEBIT"}
+    },
+    {
+      "id": "doc-02", "arquivo": "nfse_0318_clic_contabilidade.pdf", "formato": "pdf_texto",
+      "tipo": "nfse", "direcao": "pagar",
+      "emitente_nome": "Clic Contabilidade Ltda", "emitente_cnpj": "13186091000143",
+      "destinatario_nome": "Ateliê Ponto Firme Ltda", "destinatario_cnpj": "52601815000120",
+      "numero": "318", "data_emissao": "2026-10-05", "data_vencimento": "2026-10-10",
+      "itens": [{"descricao": "Honorários contábeis - outubro/2026", "quantidade": "1", "valor_unitario": "650.00", "valor_total": "650.00"}],
+      "valor_total": "650.00", "descricao": "Honorários contábeis",
+      "conta_esperada": "4.2.3",
+      "pagamento": {"data": "2026-10-07", "valor": "-650.00", "memo": "PIX ENVIADO CLIC CONTABILIDADE LTDA", "tipo": "XFER"}
+    },
+    {
+      "id": "doc-03", "arquivo": "recibo_aluguel_outubro.jpg", "formato": "imagem_escaneada",
+      "tipo": "recibo", "direcao": "pagar",
+      "emitente_nome": "José Carlos Almeida", "emitente_cnpj": null,
+      "destinatario_nome": "Ateliê Ponto Firme Ltda", "destinatario_cnpj": "52601815000120",
+      "numero": null, "data_emissao": "2026-10-05", "data_vencimento": "2026-10-05",
+      "itens": [], "valor_total": "1800.00", "descricao": "Aluguel da sala comercial - outubro/2026",
+      "conta_esperada": "4.2.1",
+      "pagamento": {"data": "2026-10-05", "valor": "-1800.00", "memo": "TED ENVIADA JOSE C ALMEIDA", "tipo": "XFER"}
+    },
+    {
+      "id": "doc-04", "arquivo": "fatura_energia_outubro.pdf", "formato": "pdf_texto",
+      "tipo": "fatura", "direcao": "pagar",
+      "emitente_nome": "Luz Capixaba Energia S.A.", "emitente_cnpj": "39099603000128",
+      "destinatario_nome": "Ateliê Ponto Firme Ltda", "destinatario_cnpj": "52601815000120",
+      "numero": "2026100045871", "data_emissao": "2026-10-01", "data_vencimento": "2026-10-15",
+      "itens": [], "valor_total": "412.37", "descricao": "Energia elétrica - referência 09/2026",
+      "conta_esperada": "4.2.2",
+      "pagamento": {"data": "2026-10-15", "valor": "-412.37", "memo": "DEB AUTOMATICO LUZ CAPIXABA", "tipo": "DEBIT"}
+    },
+    {
+      "id": "doc-05", "arquivo": "fatura_internet_outubro.pdf", "formato": "pdf_escaneado",
+      "tipo": "fatura", "direcao": "pagar",
+      "emitente_nome": "Rede Sul Fibra Ltda", "emitente_cnpj": "08246281000179",
+      "destinatario_nome": "Ateliê Ponto Firme Ltda", "destinatario_cnpj": "52601815000120",
+      "numero": "88213", "data_emissao": "2026-10-01", "data_vencimento": "2026-10-10",
+      "itens": [], "valor_total": "129.90", "descricao": "Internet fibra 500 Mb - outubro/2026",
+      "conta_esperada": "4.2.4",
+      "pagamento": {"data": "2026-10-10", "valor": "-129.90", "memo": "PAG CONTA REDE SUL FIBRA", "tipo": "DEBIT"}
+    },
+    {
+      "id": "doc-06", "arquivo": "nfe_1187_aviamentos_costa.xml", "formato": "xml_nfe",
+      "tipo": "nfe", "direcao": "pagar",
+      "emitente_nome": "Aviamentos Costa & Filhos Ltda", "emitente_cnpj": "94821993000106",
+      "destinatario_nome": "Ateliê Ponto Firme Ltda", "destinatario_cnpj": "52601815000120",
+      "numero": "1187", "data_emissao": "2026-10-08", "data_vencimento": "2026-10-08",
+      "itens": [
+        {"descricao": "Linha de costura poliéster 120 cx", "quantidade": "15", "valor_unitario": "18.90", "valor_total": "283.50"},
+        {"descricao": "Botão de madeira 15 mm (pct 100)", "quantidade": "7", "valor_unitario": "29.00", "valor_total": "203.00"}
+      ],
+      "valor_total": "486.50", "descricao": "Compra de aviamentos",
+      "conta_esperada": "4.1.1",
+      "pagamento": {"data": "2026-10-09", "valor": "-486.50", "memo": "PIX ENVIADO AVIAMENTOS COSTA", "tipo": "XFER"}
+    },
+    {
+      "id": "doc-07", "arquivo": "recibo_motofrete.png", "formato": "imagem_escaneada",
+      "tipo": "recibo", "direcao": "pagar",
+      "emitente_nome": "Leva e Traz Entregas Ltda", "emitente_cnpj": "51819093000111",
+      "destinatario_nome": "Ateliê Ponto Firme Ltda", "destinatario_cnpj": "52601815000120",
+      "numero": "771", "data_emissao": "2026-10-14", "data_vencimento": "2026-10-14",
+      "itens": [], "valor_total": "95.00", "descricao": "Motofrete - entregas a clientes",
+      "conta_esperada": "4.1.2",
+      "pagamento": {"data": "2026-10-14", "valor": "-95.00", "memo": "PIX ENVIADO LEVA E TRAZ ENTR", "tipo": "XFER"}
+    },
+    {
+      "id": "doc-08", "arquivo": "nfse_2290_nuvem_gestao.pdf", "formato": "pdf_texto",
+      "tipo": "nfse", "direcao": "pagar",
+      "emitente_nome": "Nuvem Gestão Sistemas Ltda", "emitente_cnpj": "78657975000184",
+      "destinatario_nome": "Ateliê Ponto Firme Ltda", "destinatario_cnpj": "52601815000120",
+      "numero": "2290", "data_emissao": "2026-10-01", "data_vencimento": "2026-10-03",
+      "itens": [{"descricao": "Assinatura sistema de gestão - plano Essencial", "quantidade": "1", "valor_unitario": "189.00", "valor_total": "189.00"}],
+      "valor_total": "189.00", "descricao": "Assinatura de software de gestão",
+      "conta_esperada": "4.2.5",
+      "pagamento": {"data": "2026-10-03", "valor": "-189.00", "memo": "PAG BOLETO NUVEM GESTAO SIST", "tipo": "DEBIT"}
+    },
+    {
+      "id": "doc-09", "arquivo": "nfe_0093_venda_loja_bem_vestir.xml", "formato": "xml_nfe",
+      "tipo": "nfe", "direcao": "receber",
+      "emitente_nome": "Ateliê Ponto Firme Ltda", "emitente_cnpj": "52601815000120",
+      "destinatario_nome": "Loja Bem Vestir Ltda", "destinatario_cnpj": "43231948000160",
+      "numero": "93", "data_emissao": "2026-10-06", "data_vencimento": "2026-10-20",
+      "itens": [
+        {"descricao": "Vestido linho midi", "quantidade": "20", "valor_unitario": "180.00", "valor_total": "3600.00"},
+        {"descricao": "Camisa tricoline manga curta", "quantidade": "20", "valor_unitario": "80.00", "valor_total": "1600.00"}
+      ],
+      "valor_total": "5200.00", "descricao": "Venda de roupas para revenda",
+      "conta_esperada": "3.1.1",
+      "pagamento": {"data": "2026-10-20", "valor": "5200.00", "memo": "PIX RECEBIDO LOJA BEM VESTIR LTDA", "tipo": "CREDIT"}
+    },
+    {
+      "id": "doc-10", "arquivo": "nfse_0041_hotel_mar_azul.pdf", "formato": "pdf_texto",
+      "tipo": "nfse", "direcao": "receber",
+      "emitente_nome": "Ateliê Ponto Firme Ltda", "emitente_cnpj": "52601815000120",
+      "destinatario_nome": "Hotel Mar Azul Ltda", "destinatario_cnpj": "75749118000116",
+      "numero": "41", "data_emissao": "2026-10-16", "data_vencimento": "2026-11-15",
+      "itens": [{"descricao": "Ajuste e bordado de 46 uniformes", "quantidade": "1", "valor_unitario": "1150.00", "valor_total": "1150.00"}],
+      "valor_total": "1150.00", "descricao": "Serviço de ajuste e bordado de uniformes",
+      "conta_esperada": "3.1.2",
+      "pagamento": null
+    },
+    {
+      "id": "doc-11", "arquivo": "recibo_mercadinho.jpg", "formato": "imagem_escaneada",
+      "tipo": "recibo", "direcao": "pagar",
+      "emitente_nome": "Mercadinho Boa Vista", "emitente_cnpj": null,
+      "destinatario_nome": null, "destinatario_cnpj": null,
+      "numero": null, "data_emissao": "2026-10-18", "data_vencimento": "2026-10-18",
+      "itens": [], "valor_total": "57.80", "descricao": "Material de limpeza",
+      "conta_esperada": "4.2.6",
+      "pagamento": {"data": "2026-10-18", "valor": "-57.80", "memo": "COMPRA CARTAO DEB MERCADINHO BOA V", "tipo": "DEBIT"}
+    },
+    {
+      "id": "doc-12", "arquivo": "nfe_4610_tecidos_vale_verde.xml", "formato": "xml_nfe",
+      "tipo": "nfe", "direcao": "pagar",
+      "emitente_nome": "Tecidos Vale Verde Ltda", "emitente_cnpj": "90830166000128",
+      "destinatario_nome": "Ateliê Ponto Firme Ltda", "destinatario_cnpj": "52601815000120",
+      "numero": "4610", "data_emissao": "2026-10-20", "data_vencimento": "2026-10-30",
+      "itens": [
+        {"descricao": "Tecido linho cru 1,40 m", "quantidade": "60", "valor_unitario": "38.00", "valor_total": "2280.00"},
+        {"descricao": "Tricoline estampada 1,50 m", "quantidade": "50", "valor_unitario": "24.00", "valor_total": "1200.00"}
+      ],
+      "valor_total": "3480.00", "descricao": "Compra de tecidos (reposição)",
+      "conta_esperada": "4.1.1",
+      "pagamento": {"data": "2026-10-30", "valor": "-3480.00", "memo": "PAG BOLETO TECIDOS VALE VERDE LTDA", "tipo": "DEBIT"}
+    }
+  ],
+  "transacoes_sem_documento": [
+    {"data": "2026-10-01", "valor": "-24.90", "memo": "TARIFA PACOTE SERVICOS", "tipo": "FEE", "conta_esperada": "4.3.1", "_por_que": "tarifa bancária: não tem nota, vira lançamento direto"},
+    {"data": "2026-10-21", "valor": "-650.00", "memo": "PIX ENVIADO JOAO PEDRO S", "tipo": "XFER", "conta_esperada": null, "_por_que": "armadilha: mesmo valor da contabilidade, outra data e outro nome; não pode casar com doc-02"},
+    {"data": "2026-10-31", "valor": "3.12", "memo": "RENDIMENTO CONTA REMUNERADA", "tipo": "INT", "conta_esperada": "3.2.1", "_por_que": "rendimento: lançamento direto"}
+  ],
+  "_armadilhas": [
+    "doc-01 e doc-12: mesmo fornecedor, mesmo valor (3480,00), vencimentos diferentes; o casamento tem que respeitar a data",
+    "doc-02 e o PIX de 21/10 para JOAO PEDRO: mesmo valor, nome diferente",
+    "doc-10: venda ainda não recebida, tem que sobrar em documentos_sem_transacao",
+    "doc-03 e doc-11: sem CNPJ, só nome e valor",
+    "doc-05: PDF sem camada de texto (escaneado), precisa de OCR"
+  ]
+}
