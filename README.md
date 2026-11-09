@@ -72,7 +72,7 @@ extrator por LLM e o OCR sob degradação, e trata confiança baixa como "manda 
 
 ## Como foi construído
 
-Com agentes de programação em paralelo, do jeito descrito no [AGENTS.md](AGENTS.md): primeiro o contrato de dados
+Numa tarde (9 de novembro de 2026), com agentes de programação em paralelo, do jeito descrito no [AGENTS.md](AGENTS.md): primeiro o contrato de dados
 (`modelos.py`), o cenário com gabarito e as regras do repositório; depois três frentes ao mesmo tempo, cada uma
 numa git worktree e numa branch própria, entregues por pull request com CI e revisão:
 
@@ -80,7 +80,7 @@ numa git worktree e numa branch própria, entregues por pull request com CI e re
 - [#2](https://github.com/Kaylan00/conciliador-ia/pull/2) extrato OFX/CSV e conciliação
 - [#3](https://github.com/Kaylan00/conciliador-ia/pull/3) documentos: XML, PDF, OCR e extração
 
-A integração pegou um bug real: a avaliação geral lia a chave errada do gabarito e mostrava 0 de 3 pares; com a
+Os PRs foram integrados com o CI verde (lint, testes com OCR de verdade e a avaliação) e revisados pelos testes e por leitura dos módulos centrais (conciliação, confiança, OCR). A integração pegou um bug real: a avaliação geral lia a chave errada do gabarito e mostrava 0 de 3 pares; com a
 correção, o fluxo completo deu 11 de 11.
 
 ## Rodar
