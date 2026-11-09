@@ -12,7 +12,7 @@ from conciliador.documentos.ocr import ResultadoOCR, abrir_imagem, ler_imagem
 from conciliador.documentos.pdf import renderizar_paginas, textos_das_paginas
 from conciliador.extracao import Extrator, extrator_padrao
 from conciliador.extracao.cnpj import somente_digitos
-from conciliador.modelos import Direcao, DocumentoExtraido, OrigemTexto
+from conciliador.modelos import Direcao, DocumentoExtraido, OrigemTexto, TipoDocumento
 
 # Página com menos letras e dígitos que isso é tratada como escaneada (às vezes sobra só o número da página).
 MINIMO_CARACTERES_TEXTO = 30
@@ -74,6 +74,10 @@ def ler_documento(
     else:
         texto, origem, confianca_ocr = _texto_do_arquivo(conteudo, formato)
         documento = (extrator or extrator_padrao()).extrair(texto, origem)
+    if documento.tipo == TipoDocumento.RECIBO and documento.data_vencimento is None:
+        # Recibo comprova pagamento já feito: vence no dia em que foi passado. Sem isso, a conciliação
+        # perde a data de referência (o extrator por LLM, corretamente, não inventa um vencimento).
+        documento = documento.model_copy(update={"data_vencimento": documento.data_emissao})
     documento = documento.model_copy(update={"direcao": definir_direcao(documento.emitente_cnpj, cnpj_empresa)})
     return aplicar_confianca(documento, confianca_ocr)
 

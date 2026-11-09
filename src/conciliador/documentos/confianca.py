@@ -7,7 +7,11 @@ modelo) entram na mesma soma. Ninguém pergunta ao modelo o quanto ele confia em
 
 from __future__ import annotations
 
+import re
+import unicodedata
 from decimal import Decimal
+
+from rapidfuzz import fuzz
 
 from conciliador.extracao.cnpj import cnpj_valido, formatar_cnpj
 from conciliador.extracao.extenso import valor_por_extenso_no_texto
@@ -25,12 +29,27 @@ PENALIDADES = {
     # Sozinha já leva a confiança para baixo de 0,8, a linha de corte da revisão: no teste de estresse, imagem
     # borrada a ponto de o Tesseract duvidar de si mesmo trouxe valor e data errados que nenhuma outra regra pegou.
     "ocr_baixa_confianca": 0.3,
+    # Visto com o gpt-4o-mini: no recibo "Recebi de <empresa>", o modelo pôs a empresa que PAGOU como emitente.
+    # Isso inverte a direção (compra vira venda) e nenhuma outra regra pegava.
+    "recibo_emitente_e_quem_pagou": 0.5,
     "data_emissao_ausente": 0.2,
     "emitente_ausente": 0.2,
 }
 CONFIANCA_OCR_MINIMA = 70.0  # escala do Tesseract, 0 a 100
 TIPOS_COM_CNPJ_DO_EMITENTE = {TipoDocumento.NFE, TipoDocumento.NFSE, TipoDocumento.FATURA}  # recibo pode não ter
 TOLERANCIA_ITENS = Decimal("0.01")  # arredondamento de centavo em item com quantidade fracionada
+SIMILARIDADE_MESMO_NOME = 85
+_RECEBI_DE = re.compile(r"receb(?:i|emos)\s+d[eoa]s?\s+(.+?)(?:,|\s+a\s+(?:importancia|quantia)|\s+o\s+valor|\n|$)")
+
+
+def _sem_acento(texto: str) -> str:
+    return unicodedata.normalize("NFKD", texto).encode("ascii", "ignore").decode().lower()
+
+
+def quem_pagou_no_recibo(texto: str) -> str | None:
+    """Em recibo, quem assina recebeu; quem aparece depois de "Recebi de" é quem pagou."""
+    achado = _RECEBI_DE.search(_sem_acento(texto))
+    return achado.group(1).strip(" .:") if achado else None
 
 
 def _problema(codigo: str, mensagem: str) -> Problema:
@@ -80,6 +99,14 @@ def problemas_da_extracao(doc: DocumentoExtraido, confianca_ocr: float | None = 
             f"{doc.tipo.value.upper()} sempre traz o CNPJ de quem emite, mas ele não foi encontrado: "
             "confira o emitente.",
         ))
+    if doc.tipo == TipoDocumento.RECIBO and doc.emitente_nome:
+        pagador = quem_pagou_no_recibo(doc.texto)
+        if pagador and fuzz.token_set_ratio(_sem_acento(doc.emitente_nome), pagador) >= SIMILARIDADE_MESMO_NOME:
+            problemas.append(_problema(
+                "recibo_emitente_e_quem_pagou",
+                f"O recibo diz que {doc.emitente_nome} pagou, mas ele saiu como emitente: em recibo, o emitente é "
+                "quem recebeu o dinheiro. Confira emitente e direção.",
+            ))
     if confianca_ocr is not None and confianca_ocr < CONFIANCA_OCR_MINIMA:
         problemas.append(_problema(
             "ocr_baixa_confianca",
